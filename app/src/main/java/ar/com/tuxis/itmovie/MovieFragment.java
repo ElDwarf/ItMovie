@@ -1,5 +1,6 @@
 package ar.com.tuxis.itmovie;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -7,10 +8,15 @@ import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,12 +32,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import ar.com.tuxis.itmovie.Movie.Movie;
+import ar.com.tuxis.itmovie.Movie.MovieGridAdapter;
 
 /**
  * Created by pdalmasso on 15/8/16.
  */
 public class MovieFragment extends Fragment {
-    public ArrayAdapter<Movie> mMovieAdapter;
+    public MovieGridAdapter mMovieAdapter;
 
     public MovieFragment() {
     }
@@ -40,91 +47,112 @@ public class MovieFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Add this line in order for this fragment to handle menu events.
-        Log.v("PRUEBA", "OK!!! ");
+        setHasOptionsMenu(true);
     }
 
 
-    public void updateMovie(){
+    public void updateMovie(String parameter){
         FetchMovieTask movieTask = new FetchMovieTask();
-        movieTask.execute();
+        movieTask.execute(parameter);
+    }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.moviefragment, menu);
     }
 
     @Override
     public void onStart(){
         super.onStart();
-        updateMovie();
+        updateMovie("popular");
+    }
+
+    public interface Callback {
+        void onItemSelected(Movie movie);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        mMovieAdapter =
-                new ArrayAdapter<Movie>(
-                        getActivity(), // The current context (this activity)
-                        R.layout.grid_item_movie, // The name of the layout ID.
-                        R.id.grid_item_movie_textview, // The ID of the textview to populate.
-                        new ArrayList<Movie>());
+        mMovieAdapter = new MovieGridAdapter(
+                getActivity(), // The current context (this activity)
+                new ArrayList<Movie>()
+        );
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         // Get a reference to the ListView, and attach this adapter to it.
         GridView gridView = (GridView) rootView.findViewById(R.id.Gridview_movie);
         gridView.setAdapter(mMovieAdapter);
-        //TODO: Agregar el detalle al hacer click
-        /*
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l){
-                String forecast = mForecastAdapter.getItem(position);
+                Movie movie = mMovieAdapter.getItem(position);
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
-                        .putExtra(Intent.EXTRA_TEXT, forecast);
+                        .putExtra("MyClass", movie);
                 startActivity(intent);
             }
-        });*/
+        });
         return rootView;
     }
 
-    public class FetchMovieTask extends AsyncTask<Movie, Void, Movie[]> {
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.order_most_popular) {
+            updateMovie("popular");
+            return true;
+        }else if (id == R.id.order_highest_rated) {
+            updateMovie("rate");
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public class FetchMovieTask extends AsyncTask<String, Void, Movie[]> {
 
         private final String LOG_TAG = FetchMovieTask.class.getSimpleName();
 
         private Movie[] getMovieDataFromJson(String forecastJsonStr)
                 throws JSONException {
-
             // These are the names of the JSON objects that need to be extracted.
             final String OWM_RESULTS = "results";
-
             JSONObject forecastJson = new JSONObject(forecastJsonStr);
             JSONArray movieArray = forecastJson.getJSONArray(OWM_RESULTS);
-
             Movie[] result = new Movie[movieArray.length()];
             for(int i = 0; i < movieArray.length(); i++) {
-
                 JSONObject movieJSON = movieArray.getJSONObject(i);
-
                 Movie movie_temp = new Movie(movieJSON);
-
-                //TODO: Acomodar return
                 result[i] = movie_temp;
             }
             return result;
         }
 
         @Override
-        protected Movie[] doInBackground(Movie... params) {
+        protected Movie[] doInBackground(String... params) {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
 
             String movieJsonStr = null;
-            // Log.v("PRUEBA", "PR01");
             try {
-                final String FORECAST_BASE_URL =
-                        "http://api.themoviedb.org/3/movie/popular?";
+                String FORECAST_BASE_URL = "http://api.themoviedb.org/3/movie/";
+                if (params.length > 0) {
+                    if (params[0] == "popular") {
+                        FORECAST_BASE_URL = FORECAST_BASE_URL + "popular?";
+                    }else if (params[0] == "rate") {
+                        FORECAST_BASE_URL += "top_rated?";
+                    }
+                }else{
+                    FORECAST_BASE_URL = FORECAST_BASE_URL + "popular?";
+                }
                 final String APPID_PARAM = "api_key";
                 Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                        .appendQueryParameter(APPID_PARAM, String.valueOf(""))
+                        .appendQueryParameter(APPID_PARAM, getResources().getString(R.string.MyMovieApiKey))
                         .build();
                 URL url = new URL(builtUri.toString());
 

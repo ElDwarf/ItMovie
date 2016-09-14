@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.tuxis.dev.sunhine.MainActivity">
+    <item
+        android:id="@+id/order_most_popular"
+        android:orderInCategory="100"
+        android:title="@string/action_order_most_popular"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/order_highest_rated"
+        android:orderInCategory="100"
+        android:title="@string/action_order_highest_rated"
+        app:showAsAction="never" />
+</menu>

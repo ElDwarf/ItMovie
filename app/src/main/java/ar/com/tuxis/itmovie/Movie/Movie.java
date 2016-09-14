@@ -6,10 +6,12 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+
 /**
  * Created by pdalmasso on 31/8/16.
  */
-public class Movie implements Parcelable {
+public class Movie implements Serializable {
 
     private int id;
     private String title;
@@ -158,24 +160,12 @@ public class Movie implements Parcelable {
     protected Movie(Parcel in) {
     }
 
-    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
-        @Override
-        public Movie createFromParcel(Parcel in) {
-            return new Movie(in);
-        }
 
-        @Override
-        public Movie[] newArray(int size) {
-            return new Movie[size];
-        }
-    };
-
-    @Override
     public int describeContents() {
         return 0;
     }
 
-    @Override
+
     public void writeToParcel(Parcel dest, int flags) {
     }
 }
