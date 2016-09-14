@@ -1,0 +1,22 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ar.com.tuxis.itmovie.MovieFragment"
+    tools:showIn="@layout/activity_main"
+    android:background="#000000">
+    <!--<GridView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/Gridview_movie" />-->
+    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/Gridview_movie"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="auto_fit"
+        android:columnWidth="100dp"
+        android:verticalSpacing="5dp"
+        android:horizontalSpacing="5dp"
+        android:padding="5dp"
+        android:drawSelectorOnTop="true" />
+</FrameLayout>

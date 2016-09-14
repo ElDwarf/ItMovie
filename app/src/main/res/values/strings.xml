@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">It Movie</string>
+    <string name="MyMovieApiKey" translatable="false"></string>
+    <string name="title_activity_detail">Detail</string>
+    <string name="action_order_most_popular">Order by Most Popular</string>
+    <string name="action_order_highest_rated">Order by Highest Rated</string>
 </resources>
