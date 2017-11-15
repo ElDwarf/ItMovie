@@ -5,10 +5,6 @@
     tools:context="ar.com.tuxis.itmovie.MovieFragment"
     tools:showIn="@layout/activity_main"
     android:background="#000000">
-    <!--<GridView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/Gridview_movie" />-->
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/Gridview_movie"
         android:layout_width="match_parent"
