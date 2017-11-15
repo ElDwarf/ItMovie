@@ -8,7 +8,7 @@ import org.json.JSONObject;
 import java.io.Serializable;
 
 /**
- * Created by pdalmasso on 31/8/16.
+ * Created by pdalmasso on 14/11/17.
  */
 public class Trailer implements Serializable {
 

@@ -5,10 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -17,37 +14,37 @@ import ar.com.tuxis.itmovie.R;
 /**
  * Created by pdalmasso on 14/11/17.
  */
-public class TrailerListAdapter extends BaseAdapter {
+public class ReviewListAdapter extends BaseAdapter {
 
-    private Trailer trailer = new Trailer();
-    private List<Trailer> trailerObjects;
+    private Review review = new Review();
+    private List<Review> reviewObjects;
     private Context context;
     private final LayoutInflater layoutInflater;
 
-    public TrailerListAdapter(Context p_context, List<Trailer> p_objects) {
+    public ReviewListAdapter(Context p_context, List<Review> p_objects) {
         layoutInflater = (LayoutInflater) p_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = p_context;
-        this.trailerObjects = p_objects;
+        this.reviewObjects = p_objects;
     }
 
-    public void add(Trailer object) {
-        synchronized (this.trailer) {
-            this.trailerObjects.add(object);
+    public void add(Review object) {
+        synchronized (this.review) {
+            this.reviewObjects.add(object);
         }
         notifyDataSetChanged();
     }
 
     public void clear() {
-        synchronized (this.trailer) {
-            this.trailerObjects.clear();
+        synchronized (this.review) {
+            this.reviewObjects.clear();
         }
         notifyDataSetChanged();
     }
 
-    public void setData(List<Trailer> data) {
+    public void setData(List<Review> data) {
         clear();
-        for (Trailer trailer : data) {
-            add(trailer);
+        for (Review review : data) {
+            add(review);
         }
     }
 
@@ -57,12 +54,12 @@ public class TrailerListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return trailerObjects.size();
+        return reviewObjects.size();
     }
 
     @Override
-    public Trailer getItem(int position) {
-        return trailerObjects.get(position);
+    public Review getItem(int position) {
+        return reviewObjects.get(position);
     }
 
     @Override
@@ -76,26 +73,31 @@ public class TrailerListAdapter extends BaseAdapter {
         ViewHolder viewHolder;
 
         if (view == null) {
-            view = this.layoutInflater.inflate(R.layout.movie_detail_trailer, parent, false);
+            view = this.layoutInflater.inflate(R.layout.movie_detail_review, parent, false);
             viewHolder = new ViewHolder(view);
             view.setTag(viewHolder);
         }
 
-        final Trailer trailer = getItem(position);
+        final Review review = getItem(position);
 
-        String title = trailer.getName();
+        String author = review.getAuthor();
+        String content = review.getContent();
 
         viewHolder = (ViewHolder) view.getTag();
-        viewHolder.titleView.setText(trailer.getName());
+        viewHolder.author_titleView.setText(author);
+        viewHolder.content_titleView.setText(content);
+
 
         return view;
     }
 
     public static class ViewHolder {
-        public final TextView titleView;
+        public final TextView author_titleView;
+        public final TextView content_titleView;
 
         public ViewHolder(View view) {
-            titleView = (TextView) view.findViewById(R.id.movie_detail_trailer_textview);
+            author_titleView = (TextView) view.findViewById(R.id.movie_review_author_textview);
+            content_titleView = (TextView) view.findViewById(R.id.movie_review_content_textview);
         }
     }
 }
