@@ -1,6 +1,9 @@
 package ar.com.tuxis.itmovie;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,11 +36,18 @@ import java.util.ArrayList;
 
 import ar.com.tuxis.itmovie.Movie.Movie;
 import ar.com.tuxis.itmovie.Movie.MovieGridAdapter;
+import ar.com.tuxis.itmovie.data.MovieContract;
+import ar.com.tuxis.itmovie.data.MovieDbHelper;
+
+import static java.security.AccessController.getContext;
 
 /**
  * Created by pdalmasso on 15/8/16.
  */
 public class MovieFragment extends Fragment {
+
+    private SQLiteDatabase mDb;
+
     public MovieGridAdapter mMovieAdapter;
 
     public MovieFragment() {
@@ -70,13 +80,38 @@ public class MovieFragment extends Fragment {
         void onItemSelected(Movie movie);
     }
 
+    private Cursor getAllMovie() {
+        // COMPLETED (6) Inside, call query on mDb passing in the table name and projection String [] order by COLUMN_TIMESTAMP
+
+        return mDb.query(
+                MovieContract.MovieEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        MovieDbHelper dbHelper = new MovieDbHelper(getActivity());
+        mDb = dbHelper.getWritableDatabase();
+        Cursor mCursor = getAllMovie();
+        ArrayList<Movie> mArrayList = new ArrayList<Movie>();
+        while(mCursor.moveToNext()) {
+            Movie movie_temp = new Movie();
+            movie_temp.loadDataFormCursor(mCursor);
+            mArrayList.add(movie_temp); //add the item
+        }
         mMovieAdapter = new MovieGridAdapter(
                 getActivity(), // The current context (this activity)
-                new ArrayList<Movie>()
+                mArrayList
         );
+
+
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 

@@ -30,6 +30,11 @@ public class MovieGridAdapter extends BaseAdapter {
     }
 
     public void add(Movie object) {
+        try {
+            object.save(context);
+        } catch (Exception e) {
+        }
+
         synchronized (this.movie) {
             this.movieObjects.add(object);
         }

@@ -1,5 +1,9 @@
 package ar.com.tuxis.itmovie.Movie;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,6 +11,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+
+import ar.com.tuxis.itmovie.data.MovieContract;
+import ar.com.tuxis.itmovie.data.MovieDbHelper;
 
 /**
  * Created by pdalmasso on 31/8/16.
@@ -25,6 +32,7 @@ public class Movie implements Serializable {
     private String vote_count;
     private String video;
     private int vote_average;
+    private Boolean favorite;
 
     public Movie() {
     }
@@ -55,6 +63,7 @@ public class Movie implements Serializable {
         this.vote_count = movie_item.getString(OWM_VOTE_COUNT);
         this.video = movie_item.getString(OWM_VIDEO);
         this.vote_average = movie_item.getInt(OWM_VOTE_AVERAGE);
+        this.favorite = false;
     }
 
     public int getId() {
@@ -157,9 +166,16 @@ public class Movie implements Serializable {
         this.vote_average = vote_average;
     }
 
-    protected Movie(Parcel in) {
+    public void setFavorite() {
+        this.favorite = true;
     }
 
+    public void unSetFavorite() {
+        this.favorite = false;
+    }
+
+    protected Movie(Parcel in) {
+    }
 
     public int describeContents() {
         return 0;
@@ -167,5 +183,40 @@ public class Movie implements Serializable {
 
 
     public void writeToParcel(Parcel dest, int flags) {
+    }
+
+    public long save(Context context) {
+        SQLiteDatabase mDb;
+        MovieDbHelper dbHelper = new MovieDbHelper(context);
+        mDb = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(MovieContract.MovieEntry.COLUMN_ID, this.id);
+        cv.put(MovieContract.MovieEntry.COLUMN_TITLE, this.title);
+        cv.put(MovieContract.MovieEntry.COLUMN_POSTER_PATH, this.poster_path);
+        cv.put(MovieContract.MovieEntry.COLUMN_OVERVIEW, this.overview);
+        cv.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATA, this.release_date);
+        cv.put(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE, this.original_title);
+        cv.put(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH, this.backdrop_path);
+        cv.put(MovieContract.MovieEntry.COLUMN_POPULARITY, this.popularity);
+        cv.put(MovieContract.MovieEntry.COLUMN_VOTE_COUNT, this.vote_count);
+        cv.put(MovieContract.MovieEntry.COLUMN_VIDEO, this.video);
+        cv.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, this.vote_average);
+        cv.put(MovieContract.MovieEntry.COLUMN_FAVORITE, this.favorite);
+        return mDb.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
+    }
+
+    public void loadDataFormCursor(Cursor cursor){
+        this.id = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID));
+        this.title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE));
+        this.poster_path = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH));
+        this.overview = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW));
+        this.release_date = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATA));
+        this.original_title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE));
+        this.backdrop_path = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH));
+        this.popularity = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POPULARITY));
+        this.vote_count = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_COUNT));
+        this.video = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VIDEO));
+        this.vote_average = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE));
+        this.favorite = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)) > 0;
     }
 }
