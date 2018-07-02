@@ -267,6 +267,11 @@ public class DetailActivity extends ActionBarActivity {
 
                     for (Trailer TrailerStr : strings){
                         mTrailerListAdapter.add(TrailerStr);
+                        int list_cell_size=200;
+                        ViewGroup.LayoutParams list;
+                        list = (ViewGroup.LayoutParams) trailerListView.getLayoutParams();
+                        list.height = list_cell_size * mTrailerListAdapter.getCount();
+                        trailerListView.setLayoutParams(list);
                     }
                 }
             }
@@ -364,7 +369,19 @@ public class DetailActivity extends ActionBarActivity {
                     }
 
                     for (Review ReviewStr : strings){
+                        int UNBOUNDED = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
                         mReviewListAdapter.add(ReviewStr);
+
+                        int grossElementHeight = 0;
+                        for(int x = 0; x < mReviewListAdapter.getCount(); x++){
+                            View childView = mReviewListAdapter.getView(x, null, reviewListView);
+                            childView.measure(UNBOUNDED, UNBOUNDED);
+                            grossElementHeight += childView.getMeasuredHeight();
+                        }
+                        ViewGroup.LayoutParams list;
+                        list = (ViewGroup.LayoutParams) reviewListView.getLayoutParams();
+                        list.height = grossElementHeight;
+                        reviewListView.setLayoutParams(list);
                     }
                 }
             }
