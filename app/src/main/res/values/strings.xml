@@ -4,4 +4,6 @@
     <string name="title_activity_detail">Detail</string>
     <string name="action_order_most_popular">Order by Most Popular</string>
     <string name="action_order_highest_rated">Order by Highest Rated</string>
+    <string name="action_only_fav">Filter Only Favourite</string>
+    <string name="action_view_all">View all</string>
 </resources>

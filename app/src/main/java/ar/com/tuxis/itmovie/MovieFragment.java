@@ -96,6 +96,23 @@ public class MovieFragment extends Fragment {
         return response;
     }
 
+    private Cursor getAnlyFavMovie() {
+        // COMPLETED (6) Inside, call query on mDb passing in the table name and projection String [] order by COLUMN_TIMESTAMP
+        MovieDbHelper dbHelper = new MovieDbHelper(getActivity());
+        mDb = dbHelper.getWritableDatabase();
+        Cursor response = mDb.query(
+                MovieContract.MovieEntry.TABLE_NAME,
+                null,
+                "favorite > 0",
+                null,
+                null,
+                null,
+                null
+        );
+        Log.e("<testttt>: ", Integer.toString(response.getCount()));
+        return response;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -145,6 +162,30 @@ public class MovieFragment extends Fragment {
         }else if (id == R.id.order_highest_rated) {
             updateMovie("rate");
             return true;
+        }else if (id == R.id.filter_Fav_only){
+            Cursor mCursor = getAnlyFavMovie();
+            ArrayList<Movie> mArrayList = new ArrayList<Movie>();
+            while(mCursor.moveToNext()) {
+                Movie movie_temp = new Movie();
+                movie_temp.loadDataFormCursor(mCursor);
+                mArrayList.add(movie_temp); //add the item
+            }
+            mMovieAdapter.clear();
+            for (int x = 0; x < mArrayList.size(); x++){
+                mMovieAdapter.add(mArrayList.get(x));
+            }
+        }else if (id == R.id.view_all){
+            Cursor mCursor = getAllMovie();
+            ArrayList<Movie> mArrayList = new ArrayList<Movie>();
+            while(mCursor.moveToNext()) {
+                Movie movie_temp = new Movie();
+                movie_temp.loadDataFormCursor(mCursor);
+                mArrayList.add(movie_temp); //add the item
+            }
+            mMovieAdapter.clear();
+            for (int x = 0; x < mArrayList.size(); x++){
+                mMovieAdapter.add(mArrayList.get(x));
+            }
         }
         return super.onOptionsItemSelected(item);
     }
