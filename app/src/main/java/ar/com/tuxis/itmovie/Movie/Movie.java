@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -174,13 +175,22 @@ public class Movie implements Serializable {
         this.favorite = false;
     }
 
+    public void toggleFavorite() {
+        if( this.is_favirte()){
+            this.favorite = false;
+        }else{
+            this.favorite = true;
+        }
+    }
+
+    public Boolean is_favirte(){ return this.favorite; }
+
     protected Movie(Parcel in) {
     }
 
     public int describeContents() {
         return 0;
     }
-
 
     public void writeToParcel(Parcel dest, int flags) {
     }
@@ -202,7 +212,52 @@ public class Movie implements Serializable {
         cv.put(MovieContract.MovieEntry.COLUMN_VIDEO, this.video);
         cv.put(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE, this.vote_average);
         cv.put(MovieContract.MovieEntry.COLUMN_FAVORITE, this.favorite);
-        return mDb.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
+        try{
+            long id_movie;
+            id_movie = mDb.update(
+                    MovieContract.MovieEntry.TABLE_NAME,
+                    cv,
+                    "id=" + this.id,
+                    null
+            );
+            if (id_movie == 0){
+                id_movie = mDb.insert(MovieContract.MovieEntry.TABLE_NAME, null, cv);
+            }
+            mDb.close();
+            return id_movie;
+        }catch (Exception e){
+            return 0;
+        }
+
+    }
+
+    public void loadDataFormId(Context context, int id_movie){
+        MovieDbHelper dbHelper = new MovieDbHelper(context);
+        SQLiteDatabase mDb;
+        mDb = dbHelper.getWritableDatabase();
+        Cursor cursor = mDb.query(
+                MovieContract.MovieEntry.TABLE_NAME,
+                null,
+                "id = " + Integer.toString(id_movie),
+                null,
+                null,
+                null,
+                null
+        );
+        while(cursor.moveToNext()) {
+            this.id = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID));
+            this.title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE));
+            this.poster_path = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH));
+            this.overview = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_OVERVIEW));
+            this.release_date = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATA));
+            this.original_title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ORIGINAL_TITLE));
+            this.backdrop_path = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH));
+            this.popularity = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POPULARITY));
+            this.vote_count = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_COUNT));
+            this.video = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VIDEO));
+            this.vote_average = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE));
+            this.favorite = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE)) > 0;
+        }
     }
 
     public void loadDataFormCursor(Cursor cursor){

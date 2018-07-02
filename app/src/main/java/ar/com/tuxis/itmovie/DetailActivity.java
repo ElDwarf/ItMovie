@@ -1,9 +1,11 @@
 package ar.com.tuxis.itmovie;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -11,7 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,6 +32,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import ar.com.tuxis.itmovie.Movie.Movie;
 import ar.com.tuxis.itmovie.Movie.Review;
@@ -54,6 +59,7 @@ public class DetailActivity extends ActionBarActivity {
     /**
      * A placeholder fragment containing a simple view.
     */
+    @SuppressLint("ValidFragment")
     public class DetailFragment extends Fragment {
 
         private void openUrl(String url) {
@@ -64,6 +70,8 @@ public class DetailActivity extends ActionBarActivity {
 
         public TrailerListAdapter mTrailerListAdapter;
         public ReviewListAdapter mReviewListAdapter;
+        public ListView trailerListView;
+        public ListView reviewListView;
 
         static final String DETAIL_MOVIE = "DETAIL_MOVIE";
 
@@ -77,21 +85,40 @@ public class DetailActivity extends ActionBarActivity {
         TextView movieTitleTextView;
         TextView movieDetailDescription;
         ImageView imageView;
+        ImageButton imageFavorite;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+            final View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
             Intent intent = getIntent();
 
-            Movie obj = (Movie) intent.getSerializableExtra("MyClass");
+            final Movie obj = (Movie) intent.getSerializableExtra("MyClass");
             objectsMovie = obj;
             movieTitleTextView = (TextView) rootView.findViewById(R.id.movieDetailTitle);
             movieTitleTextView.setText(obj.getTitle());
             movieDetailDescription = (TextView) rootView.findViewById(R.id.movieDetailDescription);
             movieDetailDescription.setText(obj.getOverview());
             imageView = (ImageView) rootView.findViewById(R.id.imageView);
+            imageFavorite = (ImageButton) rootView.findViewById(R.id.btnFavorite);
+            if (obj.is_favirte()){
+                imageFavorite.setImageResource(android.R.drawable.btn_star_big_on);
+            }else{
+                imageFavorite.setImageResource(android.R.drawable.btn_star_big_off);
+            }
+            imageFavorite.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    obj.toggleFavorite();
+                    obj.save(rootView.getContext());
+                    if (obj.is_favirte()){
+                        imageFavorite.setImageResource(android.R.drawable.btn_star_big_on);
+                    }else{
+                        imageFavorite.setImageResource(android.R.drawable.btn_star_big_off);
+                    }
+                }
+            });
+
 
             String image_url = "http://image.tmdb.org/t/p/w780" + obj.getBackdrop_path();
 
@@ -102,7 +129,7 @@ public class DetailActivity extends ActionBarActivity {
                     getActivity(), // The current context (this activity)
                     new ArrayList<Trailer>()
             );
-            ListView trailerListView = (ListView) rootView.findViewById(R.id.trailer_container);
+            trailerListView = (ListView) rootView.findViewById(R.id.trailer_container);
             trailerListView.setAdapter(mTrailerListAdapter);
 
             trailerListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -117,7 +144,7 @@ public class DetailActivity extends ActionBarActivity {
                     getActivity(), // The current context (this activity)
                     new ArrayList<Review>()
             );
-            ListView reviewListView = (ListView) rootView.findViewById(R.id.reviews_container);
+            reviewListView = (ListView) rootView.findViewById(R.id.reviews_container);
             reviewListView.setAdapter(mReviewListAdapter);
             reviewListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
                 @Override

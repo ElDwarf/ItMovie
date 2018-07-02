@@ -82,8 +82,9 @@ public class MovieFragment extends Fragment {
 
     private Cursor getAllMovie() {
         // COMPLETED (6) Inside, call query on mDb passing in the table name and projection String [] order by COLUMN_TIMESTAMP
-
-        return mDb.query(
+        MovieDbHelper dbHelper = new MovieDbHelper(getActivity());
+        mDb = dbHelper.getWritableDatabase();
+        Cursor response = mDb.query(
                 MovieContract.MovieEntry.TABLE_NAME,
                 null,
                 null,
@@ -92,13 +93,12 @@ public class MovieFragment extends Fragment {
                 null,
                 null
         );
+        return response;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        MovieDbHelper dbHelper = new MovieDbHelper(getActivity());
-        mDb = dbHelper.getWritableDatabase();
         Cursor mCursor = getAllMovie();
         ArrayList<Movie> mArrayList = new ArrayList<Movie>();
         while(mCursor.moveToNext()) {
@@ -128,6 +128,7 @@ public class MovieFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        mDb.close();
         return rootView;
     }
 
@@ -246,6 +247,7 @@ public class MovieFragment extends Fragment {
                 }
 
                 for (Movie dayForecastStr : strings){
+                    dayForecastStr.loadDataFormId(getContext(), dayForecastStr.getId());
                     mMovieAdapter.add(dayForecastStr);
                 }
             }
