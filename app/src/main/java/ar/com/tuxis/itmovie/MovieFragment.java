@@ -109,7 +109,6 @@ public class MovieFragment extends Fragment {
                 null,
                 null
         );
-        Log.e("<testttt>: ", Integer.toString(response.getCount()));
         return response;
     }
 
