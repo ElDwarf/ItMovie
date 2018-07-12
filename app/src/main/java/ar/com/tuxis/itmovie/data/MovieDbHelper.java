@@ -19,15 +19,15 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 2;
 
     // Constructor
-    public MovieDbHelper(Context context) {
+    public MovieDbHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-        // Create a table to hold waitlist data
-        final String SQL_CREATE_WAITLIST_TABLE = "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +
+        // Create a table to hold Movie data
+        final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE " + MovieEntry.TABLE_NAME + " (" +
                 MovieEntry.COLUMN_ID + " INTEGER PRIMARY KEY," +
                 MovieEntry.COLUMN_TITLE + " TEXT, " +
                 MovieEntry.COLUMN_POSTER_PATH + " TEXT, " +
@@ -41,7 +41,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieEntry.COLUMN_VOTE_AVERAGE + " INTEGER, " +
                 MovieEntry.COLUMN_FAVORITE + " BOOLEAN DEFAULT 0" +
                 "); ";
-        sqLiteDatabase.execSQL(SQL_CREATE_WAITLIST_TABLE);
+        sqLiteDatabase.execSQL(SQL_CREATE_MOVIE_TABLE);
     }
 
     @Override

@@ -83,7 +83,7 @@ public class MovieFragment extends Fragment {
     private Cursor getAllMovie() {
         // COMPLETED (6) Inside, call query on mDb passing in the table name and projection String [] order by COLUMN_TIMESTAMP
         MovieDbHelper dbHelper = new MovieDbHelper(getActivity());
-        mDb = dbHelper.getWritableDatabase();
+        mDb = dbHelper.getReadableDatabase();
         Cursor response = mDb.query(
                 MovieContract.MovieEntry.TABLE_NAME,
                 null,
@@ -99,7 +99,7 @@ public class MovieFragment extends Fragment {
     private Cursor getAnlyFavMovie() {
         // COMPLETED (6) Inside, call query on mDb passing in the table name and projection String [] order by COLUMN_TIMESTAMP
         MovieDbHelper dbHelper = new MovieDbHelper(getActivity());
-        mDb = dbHelper.getWritableDatabase();
+        mDb = dbHelper.getReadableDatabase();
         Cursor response = mDb.query(
                 MovieContract.MovieEntry.TABLE_NAME,
                 null,

@@ -234,7 +234,7 @@ public class Movie implements Serializable {
     public void loadDataFormId(Context context, int id_movie){
         MovieDbHelper dbHelper = new MovieDbHelper(context);
         SQLiteDatabase mDb;
-        mDb = dbHelper.getWritableDatabase();
+        mDb = dbHelper.getReadableDatabase();
         Cursor cursor = mDb.query(
                 MovieContract.MovieEntry.TABLE_NAME,
                 null,
