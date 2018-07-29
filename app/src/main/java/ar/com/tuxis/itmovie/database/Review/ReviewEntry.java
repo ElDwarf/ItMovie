@@ -1,24 +1,38 @@
-package ar.com.tuxis.itmovie.Movie;
+package ar.com.tuxis.itmovie.database.Review;
+
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
+@Entity(tableName = "review")
+public class ReviewEntry {
 
-/**
- * Created by pdalmasso on 14/11/17.
- */
-public class Review implements Serializable {
-
+    @PrimaryKey()
+    @NonNull
     private String id;
+    private int id_movie;
     private String author;
     private String content;
     private String url;
 
-    public Review() {
+    @Ignore
+    public ReviewEntry() {
     }
 
-    public Review(JSONObject reviews_item) throws JSONException{
+    public ReviewEntry(String id, int id_movie, String author, String content, String url) {
+        this.id = id;
+        this.id_movie = id_movie;
+        this.author = author;
+        this.content = content;
+        this.url = url;
+    }
+
+    public ReviewEntry(JSONObject reviews_item) throws JSONException {
         String OWM_ID = "id";
         String OWM_AUTHOR = "author";
         String OWM_CONTENT = "content";
@@ -36,6 +50,14 @@ public class Review implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getId_movie() {
+        return id_movie;
+    }
+
+    public void setId_movie(int id_movie) {
+        this.id_movie = id_movie;
     }
 
     public String toString() {

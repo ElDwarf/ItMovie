@@ -13,56 +13,54 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import ar.com.tuxis.itmovie.R;
+import ar.com.tuxis.itmovie.database.Trailer.TrailerEntry;
 
 /**
  * Created by pdalmasso on 14/11/17.
  */
 public class TrailerListAdapter extends BaseAdapter {
 
-    private Trailer trailer = new Trailer();
-    private List<Trailer> trailerObjects;
+    private TrailerEntry trailer = new TrailerEntry();
+    private List<TrailerEntry> mTrailerEntries;
     private Context context;
     private final LayoutInflater layoutInflater;
 
-    public TrailerListAdapter(Context p_context, List<Trailer> p_objects) {
+
+    public TrailerListAdapter(Context p_context) {
         layoutInflater = (LayoutInflater) p_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = p_context;
-        this.trailerObjects = p_objects;
     }
 
-    public void add(Trailer object) {
-        synchronized (this.trailer) {
-            this.trailerObjects.add(object);
-        }
-        notifyDataSetChanged();
+    public TrailerListAdapter(Context p_context, List<TrailerEntry> p_objects) {
+        layoutInflater = (LayoutInflater) p_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.context = p_context;
+        this.mTrailerEntries = p_objects;
     }
 
     public void clear() {
         synchronized (this.trailer) {
-            this.trailerObjects.clear();
+            this.mTrailerEntries.clear();
         }
         notifyDataSetChanged();
     }
 
-    public void setData(List<Trailer> data) {
-        clear();
-        for (Trailer trailer : data) {
-            add(trailer);
-        }
-    }
-
-    public Context getContext() {
-        return this.context;
+    public void setData(List<TrailerEntry> data) {
+        mTrailerEntries = data;
+        notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return trailerObjects.size();
+        if (mTrailerEntries != null){
+            return mTrailerEntries.size();
+        }else{
+            return 0;
+        }
     }
 
     @Override
-    public Trailer getItem(int position) {
-        return trailerObjects.get(position);
+    public TrailerEntry getItem(int position) {
+        return mTrailerEntries.get(position);
     }
 
     @Override
@@ -81,7 +79,7 @@ public class TrailerListAdapter extends BaseAdapter {
             view.setTag(viewHolder);
         }
 
-        final Trailer trailer = getItem(position);
+        final TrailerEntry trailer = getItem(position);
 
         String title = trailer.getName();
 

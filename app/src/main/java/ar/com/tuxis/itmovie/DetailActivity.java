@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.SyncStateContract;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,10 +34,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 
-import ar.com.tuxis.itmovie.Movie.Movie;
-import ar.com.tuxis.itmovie.Movie.Review;
+
 import ar.com.tuxis.itmovie.Movie.ReviewListAdapter;
-import ar.com.tuxis.itmovie.Movie.Trailer;
 import ar.com.tuxis.itmovie.Movie.TrailerListAdapter;
 
 /**

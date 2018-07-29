@@ -1,6 +1,7 @@
 package ar.com.tuxis.itmovie.Movie;
 
 import android.content.Context;
+import android.system.ErrnoException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,65 +9,58 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import ar.com.tuxis.itmovie.R;
-import com.squareup.picasso.Picasso;
+import ar.com.tuxis.itmovie.database.Movie.MovieEntry;
 
 /**
  * Created by pdalmasso on 4/9/16.
  */
 public class MovieGridAdapter extends BaseAdapter {
 
-    private Movie movie = new Movie();
-    private List<Movie> movieObjects;
+    private MovieEntry movie = new MovieEntry();
+    private List<MovieEntry> mMovieEntries;
     private Context context;
     private final LayoutInflater layoutInflater;
 
-    public MovieGridAdapter(Context p_context, List<Movie> p_objects) {
+    public MovieGridAdapter(Context p_context) {
         layoutInflater = (LayoutInflater) p_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = p_context;
-        this.movieObjects = p_objects;
     }
 
-    public void add(Movie object) {
-        try {
-            object.save(context);
-        } catch (Exception e) {
-        }
-
-        synchronized (this.movie) {
-            this.movieObjects.add(object);
-        }
-        notifyDataSetChanged();
+    public MovieGridAdapter(Context p_context, List<MovieEntry> p_objects) {
+        layoutInflater = (LayoutInflater) p_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.context = p_context;
+        this.mMovieEntries = p_objects;
     }
 
     public void clear() {
         synchronized (this.movie) {
-            this.movieObjects.clear();
+            this.mMovieEntries.clear();
         }
         notifyDataSetChanged();
     }
 
-    public void setData(List<Movie> data) {
-        clear();
-        for (Movie movie : data) {
-            add(movie);
-        }
-    }
-
-    public Context getContext() {
-        return this.context;
+    public void setData(List<MovieEntry> data) {
+        mMovieEntries = data;
+        notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return movieObjects.size();
+        if (mMovieEntries != null){
+            return mMovieEntries.size();
+        }else{
+            return 0;
+        }
     }
 
     @Override
-    public Movie getItem(int position) {
-        return movieObjects.get(position);
+    public MovieEntry getItem(int position) {
+        return mMovieEntries.get(position);
     }
 
     @Override
@@ -85,12 +79,12 @@ public class MovieGridAdapter extends BaseAdapter {
             view.setTag(viewHolder);
         }
 
-        final Movie movie = getItem(position);
+        final MovieEntry movie = getItem(position);
 
         String image_url = "http://image.tmdb.org/t/p/w342" + movie.getPoster_path();
 
         viewHolder = (ViewHolder) view.getTag();
-        Picasso.with(getContext()).load(image_url).into(viewHolder.imageView);
+        Picasso.with(context).load(image_url).into(viewHolder.imageView);
         viewHolder.titleView.setText(movie.getTitle());
 
         return view;
