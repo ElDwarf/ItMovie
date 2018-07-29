@@ -10,56 +10,55 @@ import android.widget.TextView;
 import java.util.List;
 
 import ar.com.tuxis.itmovie.R;
+import ar.com.tuxis.itmovie.database.Review.ReviewEntry;
+import ar.com.tuxis.itmovie.database.Trailer.TrailerEntry;
 
 /**
  * Created by pdalmasso on 14/11/17.
  */
 public class ReviewListAdapter extends BaseAdapter {
 
-    private Review review = new Review();
-    private List<Review> reviewObjects;
+    private ReviewEntry review = new ReviewEntry();
+    private List<ReviewEntry> mReviewEntries;
     private Context context;
     private final LayoutInflater layoutInflater;
 
-    public ReviewListAdapter(Context p_context, List<Review> p_objects) {
+
+    public ReviewListAdapter(Context p_context) {
         layoutInflater = (LayoutInflater) p_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.context = p_context;
-        this.reviewObjects = p_objects;
     }
 
-    public void add(Review object) {
-        synchronized (this.review) {
-            this.reviewObjects.add(object);
-        }
-        notifyDataSetChanged();
+    public ReviewListAdapter(Context p_context, List<ReviewEntry> p_objects) {
+        layoutInflater = (LayoutInflater) p_context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.context = p_context;
+        this.mReviewEntries = p_objects;
     }
 
     public void clear() {
         synchronized (this.review) {
-            this.reviewObjects.clear();
+            this.mReviewEntries.clear();
         }
         notifyDataSetChanged();
     }
 
-    public void setData(List<Review> data) {
-        clear();
-        for (Review review : data) {
-            add(review);
-        }
-    }
-
-    public Context getContext() {
-        return this.context;
+    public void setData(List<ReviewEntry> data) {
+        mReviewEntries = data;
+        notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return reviewObjects.size();
+        if (mReviewEntries != null){
+            return mReviewEntries.size();
+        }else{
+            return 0;
+        }
     }
 
     @Override
-    public Review getItem(int position) {
-        return reviewObjects.get(position);
+    public ReviewEntry getItem(int position) {
+        return mReviewEntries.get(position);
     }
 
     @Override
@@ -78,7 +77,7 @@ public class ReviewListAdapter extends BaseAdapter {
             view.setTag(viewHolder);
         }
 
-        final Review review = getItem(position);
+        final ReviewEntry review = getItem(position);
 
         String author = review.getAuthor();
         String content = review.getContent();

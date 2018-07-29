@@ -1,7 +1,10 @@
 package ar.com.tuxis.itmovie.database.Review;
 
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,11 +13,16 @@ import org.json.JSONObject;
 public class ReviewEntry {
 
     @PrimaryKey()
+    @NonNull
     private String id;
     private int id_movie;
     private String author;
     private String content;
     private String url;
+
+    @Ignore
+    public ReviewEntry() {
+    }
 
     public ReviewEntry(String id, int id_movie, String author, String content, String url) {
         this.id = id;

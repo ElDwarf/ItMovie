@@ -26,5 +26,8 @@ public interface ReviewDao {
     void deleteReview(ReviewEntry taskEntry);
 
     @Query("SELECT * FROM review WHERE id_movie = :id")
-    LiveData<ReviewEntry> loadReviewByMovieId(String id);
+    LiveData<List<ReviewEntry>> loadReviewByMovieId(int id);
+
+    @Query("SELECT count(*) FROM review WHERE id = :id")
+    int ExistById(String id);
 }

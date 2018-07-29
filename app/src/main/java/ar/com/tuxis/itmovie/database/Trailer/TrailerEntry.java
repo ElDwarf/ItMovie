@@ -3,6 +3,7 @@ package ar.com.tuxis.itmovie.database.Trailer;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,6 +12,7 @@ import org.json.JSONObject;
 public class TrailerEntry {
 
     @PrimaryKey()
+    @NonNull
     private String id;
     private int id_movie;
     private String key;
@@ -18,6 +20,10 @@ public class TrailerEntry {
     private String site;
 
     private static final String VIDEO_TRAILER_URL = "https://www.youtube.com/watch?v=%s";
+
+    @Ignore
+    public TrailerEntry() {
+    }
 
     public TrailerEntry(String id, int id_movie, String key, String name, String site) {
         this.id = id;
@@ -38,6 +44,10 @@ public class TrailerEntry {
         this.key = trailer_item.getString(OWM_KEY);
         this.name = trailer_item.getString(OWM_NAME);
         this.site = trailer_item.getString(OWM_SITE);
+    }
+
+    public String getTrailerUrl() {
+        return String.format(VIDEO_TRAILER_URL, this.key);
     }
 
     public String getId() {

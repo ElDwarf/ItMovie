@@ -26,6 +26,9 @@ public class MovieEntry {
     private int vote_average;
     private Boolean favorite;
 
+    @Ignore
+    public MovieEntry(){}
+
     public MovieEntry(int id, String title, String poster_path, Boolean adult, String overview,
                       String release_date, String original_title, String backdrop_path,
                       String popularity, String vote_count, String video, int vote_average) {

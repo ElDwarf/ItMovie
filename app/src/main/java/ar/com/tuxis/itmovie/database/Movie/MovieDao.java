@@ -13,8 +13,17 @@ import java.util.List;
 @Dao
 public interface MovieDao {
 
-    @Query("SELECT * FROM movie ORDER BY vote_count")
+    @Query("SELECT * FROM movie ORDER BY popularity desc")
     LiveData<List<MovieEntry>> loadAllMovie();
+
+    @Query("SELECT * FROM movie ORDER BY popularity desc")
+    LiveData<List<MovieEntry>> loadAllMovieOrdPopularity();
+
+    @Query("SELECT * FROM movie ORDER BY vote_count desc")
+    LiveData<List<MovieEntry>> loadAllMovieOrdRated();
+
+    @Query("SELECT * FROM movie WHERE favorite = 1")
+    LiveData<List<MovieEntry>> loadAllMovieFavorites();
 
     @Insert
     void insertMovie(MovieEntry movieEntry);
@@ -27,4 +36,7 @@ public interface MovieDao {
 
     @Query("SELECT * FROM movie WHERE id = :id")
     LiveData<MovieEntry> loadMovieById(int id);
+
+    @Query("SELECT count(*) FROM movie WHERE id = :id")
+    int ExistById(int id);
 }

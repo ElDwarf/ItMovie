@@ -28,5 +28,8 @@ public interface TrailerDao {
     void deleteTrailer(TrailerEntry taskEntry);
 
     @Query("SELECT * FROM trailer WHERE id_movie = :id")
-    LiveData<TrailerEntry> loadTrailerByMovieId(String id);
+    LiveData<List<TrailerEntry>> loadTrailerByMovieId(int id);
+
+    @Query("SELECT count(*) FROM trailer WHERE id = :id")
+    int ExistById(String id);
 }
